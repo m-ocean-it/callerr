@@ -37,3 +37,15 @@ func WrapWithMsg(err error, msg string, args ...any) error {
 
 	return fmt.Errorf("%s: %s: %w", callerName, msg, err)
 }
+
+func WithMsg(err error, msg string, args ...any) error {
+	if err == nil {
+		return nil
+	}
+
+	if len(args) > 0 {
+		msg = fmt.Sprintf(msg, args...)
+	}
+
+	return fmt.Errorf("%s: %w", msg, err)
+}
