@@ -1,18 +1,14 @@
 package werror
 
 import (
-	"fmt"
+	"errors"
 )
 
 // New creates a new error with the supplied message and annotates it with the caller's name.
-func New(msg string, args ...any) error {
+func New(msg string) error {
 	callerName := getCaller()
 
-	if len(args) > 0 {
-		msg = fmt.Sprintf(msg, args...)
-	}
-
-	return fmt.Errorf("%s: %s", callerName, msg)
+	return errors.New(callerName + ": " + msg)
 }
 
 // Wrap annotates the error with the caller's name.
@@ -23,33 +19,47 @@ func Wrap(err error) error {
 
 	callerName := getCaller()
 
-	return fmt.Errorf("%s: %w", callerName, err)
+	return &wrapError{
+		msg: callerName + ": " + err.Error(),
+		err: err,
+	}
 }
 
 // WrapWithMsg annotates the error with the caller's name and the supplied message.
-func WrapWithMsg(err error, msg string, args ...any) error {
+func WrapWithMsg(err error, msg string) error {
 	if err == nil {
 		return nil
 	}
 
 	callerName := getCaller()
 
-	if len(args) > 0 {
-		msg = fmt.Sprintf(msg, args...)
+	return &wrapError{
+		msg: callerName + ": " + msg + ": " + err.Error(),
+		err: err,
 	}
-
-	return fmt.Errorf("%s: %s: %w", callerName, msg, err)
 }
 
 // WithMsg annotates the error with the supplied message without the caller's name.
-func WithMsg(err error, msg string, args ...any) error {
+func WithMsg(err error, msg string) error {
 	if err == nil {
 		return nil
 	}
 
-	if len(args) > 0 {
-		msg = fmt.Sprintf(msg, args...)
+	return &wrapError{
+		msg: msg + ": " + err.Error(),
+		err: err,
 	}
+}
 
-	return fmt.Errorf("%s: %w", msg, err)
+type wrapError struct {
+	msg string
+	err error
+}
+
+func (e *wrapError) Error() string {
+	return e.msg
+}
+
+func (e *wrapError) Unwrap() error {
+	return e.err
 }

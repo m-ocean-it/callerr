@@ -1,11 +1,22 @@
 package werror
 
 import (
+	"errors"
 	"testing"
 )
 
-func Benchmark_getCaller(b *testing.B) {
+var errSome = errors.New("oops")
+
+func BenchmarkNew(b *testing.B) {
 	for range b.N {
-		_ = getCaller()
+		err := New("oops")
+		_ = err.Error()
+	}
+}
+
+func BenchmarkWrap(b *testing.B) {
+	for range b.N {
+		err := Wrap(errSome)
+		_ = err.Error()
 	}
 }

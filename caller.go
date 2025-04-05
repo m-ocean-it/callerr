@@ -2,20 +2,7 @@ package werror
 
 import (
 	"runtime"
-	"runtime/debug"
-	"strings"
 )
-
-var moduleName string
-
-func init() {
-	bi, ok := debug.ReadBuildInfo()
-	if !ok {
-		panic("Failed to read build info")
-	}
-
-	moduleName = bi.Main.Path
-}
 
 func getCaller() string {
 	const depth = 32 // Like in github.com/pkg/errors
@@ -24,5 +11,16 @@ func getCaller() string {
 	frames := runtime.CallersFrames(pc[:n])
 	frame, _ := frames.Next()
 
-	return strings.TrimPrefix(frame.Function, moduleName+"/")
+	return getAfterLastSlash(frame.Function)
+}
+
+func getAfterLastSlash(s string) string {
+	var from int
+	for i, char := range s {
+		if char == '/' {
+			from = i + 1
+		}
+	}
+
+	return s[from:]
 }

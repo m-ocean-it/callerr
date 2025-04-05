@@ -13,12 +13,12 @@ func (b *Barer) Bar() {
 
 func main() {
     err := foo()
-    fmt.Println(err) // main.foo: failed baring: pkg.Barer.Bar: oops
+    fmt.Println(err) // main.foo: pkg.Barer.Bar: oops
 }
 
 func foo() {
     barer := pkg.Barer{}
-    return werror.WrapWithMsg(barer.Bar(), "failed baring")
+    return werror.Wrap(barer.Bar())
 }
 
 ```
