@@ -1,15 +1,23 @@
 # `werror`
 
-Examples:
+*Automatically annotate errors with method names. Just call `Wrap(err)`.*
+
+## Example
+
+`./pkg/barer.go`:
 ```go
-// ./pkg/barer.go
+package pkg
 
 type Barer struct {}
+
 func (b *Barer) Bar() {
     return werror.New("oops")
 }
+```
 
-// main.go
+`./main.go`:
+```go
+package main 
 
 func main() {
     err := foo()
@@ -18,7 +26,8 @@ func main() {
 
 func foo() {
     barer := pkg.Barer{}
-    return werror.Wrap(barer.Bar())
+    err := barer.Bar()
+    
+    return werror.Wrap(err)
 }
-
 ```
