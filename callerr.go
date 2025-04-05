@@ -51,6 +51,7 @@ func WithMsg(err error, msg string) error {
 	}
 }
 
+// wrapError is copied from the fmt package to avoid more expensive calls to fmt.Errorf.
 type wrapError struct {
 	msg string
 	err error

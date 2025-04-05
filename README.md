@@ -1,6 +1,8 @@
-# `werror`
+# `callerr`
 
-*Automatically annotate errors with method names. Just call `Wrap(err)`.*
+*Automatically annotate errors with method names.*
+
+*Just call `callerr.Wrap(err)`.*
 
 ## Example
 
@@ -8,16 +10,20 @@
 ```go
 package pkg
 
+import "github.com/m-ocean-it/callerr"
+
 type Barer struct {}
 
 func (b *Barer) Bar() {
-    return werror.New("oops")
+    return callerr.New("oops")
 }
 ```
 
 `./main.go`:
 ```go
-package main 
+package main
+
+import "github.com/m-ocean-it/callerr"
 
 func main() {
     err := foo()
@@ -28,6 +34,28 @@ func foo() {
     barer := pkg.Barer{}
     err := barer.Bar()
     
-    return werror.Wrap(err)
+    return callerr.Wrap(err)
 }
+```
+
+## Available functions
+
+`New` creates a new error with the supplied message and annotates it with the caller's name.
+```go
+func New(msg string) error
+```
+
+`Wrap` annotates an error with the caller's name.
+```go
+func Wrap(err error) error
+```
+
+`WrapWithMsg` annotates an error with the caller's name and the supplied message.
+```go
+func WrapWithMsg(err error, msg string) error
+```
+
+`WithMsg` annotates an error with the supplied message without the caller's name.
+```go
+func WithMsg(err error, msg string) error
 ```
