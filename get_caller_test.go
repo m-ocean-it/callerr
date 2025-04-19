@@ -1,4 +1,4 @@
-package werror
+package callerr
 
 import (
 	"errors"

@@ -59,3 +59,43 @@ func WrapWithMsg(err error, msg string) error
 ```go
 func WithMsg(err error, msg string) error
 ```
+
+## Edge cases
+
+### Generics miss their type parameters in the error messages
+
+The output of the following code
+```go
+func try() {
+        tryer := pkg.Tryer[int]{}
+        fmt.Println(callerr.Wrap(tryer.TryToConnect()))
+}
+```
+might look like this:
+```
+main.try: pkg.(*Tryer[...]).TryToConnect: ...
+```
+
+
+### Interfaced structs are just fine
+
+Code:
+```go
+type TryerToConnect interface {
+	TryToConnect() error
+}
+
+func try() error {
+	var tryer TryerToConnect = &pkg.Tryer{}
+	fmt.Println(callerr.Wrap(tryer.TryToConnect()))
+}
+```
+
+Output:
+```
+main.try: pkg.(*Tryer).TryToConnect: ...
+```
+
+### Function inlining
+
+- [ ] Check
