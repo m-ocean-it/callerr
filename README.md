@@ -76,26 +76,6 @@ might look like this:
 main.try: pkg.(*Tryer[...]).TryToConnect: ...
 ```
 
+### Function inlining does not affect the resulting error messages
 
-### Interfaced structs are just fine
-
-Code:
-```go
-type TryerToConnect interface {
-	TryToConnect() error
-}
-
-func try() error {
-	var tryer TryerToConnect = &pkg.Tryer{}
-	fmt.Println(callerr.Wrap(tryer.TryToConnect()))
-}
-```
-
-Output:
-```
-main.try: pkg.(*Tryer).TryToConnect: ...
-```
-
-### Function inlining
-
-- [ ] Check
+The library uses the `runtime.CallersFrames` method that accounts for function inlining, so it's not a factor here.
